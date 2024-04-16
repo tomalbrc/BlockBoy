@@ -9,27 +9,19 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.tomalbrc.blockboy.gui.EmulatorGui;
-import de.tomalbrc.blockboy.gui.MapGui;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
-import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static net.minecraft.commands.Commands.argument;
 
 public class BlockBoyCommand {
-    private static final CommandDispatcher<EmulatorGui> COMMANDS = new CommandDispatcher<>();
-
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> blockboy = Commands.literal("blockboy");
 
@@ -57,7 +49,8 @@ public class BlockBoyCommand {
 
                 var files = Files.list(path);
                 for (Path filepath : files.toList()) {
-                    if (filepath.getFileName().toString().endsWith(".gbc"))
+                    var str = filepath.getFileName().toString().toLowerCase();
+                    if (str.endsWith(".gbc") || str.endsWith(".gb"))
                         builder.suggest(filepath.getFileName().toString());
                 }
             } catch (IOException e) {
