@@ -44,7 +44,7 @@ public class MapGui extends HotbarGui {
         var pos = player.getOnPos().atY(2048);
         this.pos = pos;
 
-        this.entity = new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, player.getLevel());
+        this.entity = new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, player.level());
         this.entity.setYRot(0);
         this.entity.setYHeadRot(0);
         this.entity.setNoGravity(true);
@@ -57,7 +57,7 @@ public class MapGui extends HotbarGui {
         player.connection.send(this.entity.getAddEntityPacket());
         //player.setInvisible(true);
         player.connection.send(new ClientboundSetEntityDataPacket(this.entity.getId(), this.entity.getEntityData().getNonDefaultValues()));
-        player.connection.send(new ClientboundMoveEntityPacket.Rot(player.getId(), (byte) 0, (byte) 0, player.isOnGround()));
+        player.connection.send(new ClientboundMoveEntityPacket.Rot(player.getId(), (byte) 0, (byte) 0, player.onGround()));
 
         var buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeVarInt(this.entity.getId());
