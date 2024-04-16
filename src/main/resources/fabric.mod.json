@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "blockboy",
+  "version": "${version}",
+  "name": "BlockBoy",
+  "description": "Gameboy emulator for your fabric minecraft server!",
+  "authors": [
+    "tomalbrc"
+  ],
+  "contact": {
+    "website": "https://github.com/tomalbrc/BlockBoy",
+    "repo": "https://github.com/tomalbrc/BlockBoy"
+  },
+  "license": "LGPL-3.0",
+  "icon": "assets/blockboy/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "de.tomalbrc.blockboy.BlockBoy"
+    ]
+  },
+  "mixins": [
+    "blockboy.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
