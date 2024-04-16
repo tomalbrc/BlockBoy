@@ -11,7 +11,7 @@
     "website": "https://github.com/tomalbrc/BlockBoy",
     "repo": "https://github.com/tomalbrc/BlockBoy"
   },
-  "license": "LGPL-3.0",
+  "license": "MIT",
   "icon": "assets/blockboy/icon.png",
   "environment": "*",
   "entrypoints": {
