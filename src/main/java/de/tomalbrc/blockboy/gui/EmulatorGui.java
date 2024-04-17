@@ -174,8 +174,6 @@ public class EmulatorGui extends MapGui {
 
         CanvasUtils.draw(this.canvas, xPos, yPos, image);
 
-        this.player.connection.send(new ClientboundTeleportEntityPacket(this.entity));
-        this.player.connection.send(new ClientboundMoveEntityPacket.Rot(player.getId(), (byte) 0, (byte) 0, player.onGround()));
         this.canvas.sendUpdates();
     }
 

@@ -36,7 +36,7 @@ public class BlockBoyDisplay implements Display, Runnable {
     public BlockBoyDisplay(int scale, boolean grayscale) {
         super();
 
-        img = new BufferedImage(DISPLAY_WIDTH, DISPLAY_HEIGHT, BufferedImage.TYPE_4BYTE_ABGR);
+        img = new BufferedImage(DISPLAY_WIDTH, DISPLAY_HEIGHT, BufferedImage.TYPE_INT_RGB);
         rgb = new int[DISPLAY_WIDTH * DISPLAY_HEIGHT];
         waitingFrame = new int[rgb.length];
         this.grayscale = grayscale;
