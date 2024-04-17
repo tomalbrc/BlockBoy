@@ -10,11 +10,9 @@ import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.rekawek.coffeegb.CartridgeOptions;
-import eu.rekawek.coffeegb.Gameboy;
 import eu.rekawek.coffeegb.controller.ButtonListener;
-import eu.rekawek.coffeegb.emulator.EmulationController;
-import eu.rekawek.coffeegb.memory.cart.Cartridge;
 import eu.rekawek.coffeegb.emulator.BlockBoyDisplay;
+import eu.rekawek.coffeegb.emulator.EmulationController;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
@@ -24,10 +22,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
 
 public class EmulatorGui extends MapGui {
     private static final CommandDispatcher<EmulatorGui> COMMANDS = new CommandDispatcher<>();

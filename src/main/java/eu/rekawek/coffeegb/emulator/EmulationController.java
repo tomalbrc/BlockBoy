@@ -1,12 +1,11 @@
 package eu.rekawek.coffeegb.emulator;
 
-import eu.rekawek.coffeegb.Gameboy;
 import eu.rekawek.coffeegb.CartridgeOptions;
+import eu.rekawek.coffeegb.Gameboy;
 import eu.rekawek.coffeegb.controller.ButtonListener;
 import eu.rekawek.coffeegb.memory.cart.Cartridge;
 import eu.rekawek.coffeegb.serial.SerialEndpoint;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.core.appender.rolling.action.IfAll;
 
 import java.io.File;
 import java.io.IOException;
