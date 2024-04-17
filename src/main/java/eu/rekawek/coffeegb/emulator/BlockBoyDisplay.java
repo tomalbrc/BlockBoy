@@ -1,29 +1,12 @@
 package eu.rekawek.coffeegb.emulator;
 
-import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.rekawek.coffeegb.gpu.Display;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.FastColor;
-import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.MapItem;
-import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlockBoyDisplay implements Display, Runnable {
 
@@ -52,10 +35,8 @@ public class BlockBoyDisplay implements Display, Runnable {
 
     public BlockBoyDisplay(int scale, boolean grayscale) {
         super();
-        GraphicsConfiguration gfxConfig = GraphicsEnvironment.
-                getLocalGraphicsEnvironment().getDefaultScreenDevice().
-                getDefaultConfiguration();
-        img = gfxConfig.createCompatibleImage(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+
+        img = new BufferedImage(DISPLAY_WIDTH, DISPLAY_HEIGHT, BufferedImage.TYPE_4BYTE_ABGR);
         rgb = new int[DISPLAY_WIDTH * DISPLAY_HEIGHT];
         waitingFrame = new int[rgb.length];
         this.grayscale = grayscale;

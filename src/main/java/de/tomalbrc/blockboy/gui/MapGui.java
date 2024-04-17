@@ -1,9 +1,5 @@
 package de.tomalbrc.blockboy.gui;
 
-import com.google.common.base.Predicates;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.tree.ArgumentCommandNode;
-import com.mojang.brigadier.tree.RootCommandNode;
 import eu.pb4.mapcanvas.api.core.CombinedPlayerCanvas;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.VirtualDisplay;
@@ -11,18 +7,15 @@ import eu.pb4.sgui.api.gui.HotbarGui;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.RelativeMovement;
-import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;

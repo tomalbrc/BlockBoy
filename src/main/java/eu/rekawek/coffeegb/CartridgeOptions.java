@@ -1,7 +1,5 @@
 package eu.rekawek.coffeegb;
 
-import java.util.Collection;
-
 public class CartridgeOptions {
 
     private final boolean forceDmg;
