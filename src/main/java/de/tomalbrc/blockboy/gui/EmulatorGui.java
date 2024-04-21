@@ -2,6 +2,7 @@ package de.tomalbrc.blockboy.gui;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.RootCommandNode;
@@ -15,8 +16,6 @@ import eu.rekawek.coffeegb.emulator.BlockBoyDisplay;
 import eu.rekawek.coffeegb.emulator.EmulationController;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
-import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
-import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -31,6 +30,8 @@ public class EmulatorGui extends MapGui {
     private int height;
     private int xPos;
     private int yPos;
+
+    private int scale = 1;
 
     @Nullable
     private EmulationController controller;
@@ -63,8 +64,8 @@ public class EmulatorGui extends MapGui {
 
     @Override
     public void onTick() {
-        this.xPos = (this.canvas.getWidth() - 160*2) / 2;
-        this.yPos = (this.canvas.getHeight() - 144*2) / 2;
+        this.xPos = (this.canvas.getWidth() - 160*2*scale) / 2;
+        this.yPos = (this.canvas.getHeight() - 144*2*scale) / 2;
 
         this.draw();
     }
@@ -169,7 +170,7 @@ public class EmulatorGui extends MapGui {
             CanvasUtils.clear(image, CanvasColor.YELLOW_HIGH);
         }
         else {
-            image = controller.getDisplay().render(BlockBoyDisplay.DISPLAY_WIDTH*2, BlockBoyDisplay.DISPLAY_HEIGHT*2);
+            image = controller.getDisplay().render(BlockBoyDisplay.DISPLAY_WIDTH*2*scale, BlockBoyDisplay.DISPLAY_HEIGHT*2*scale);
         }
 
         CanvasUtils.draw(this.canvas, xPos, yPos, image);
@@ -185,13 +186,13 @@ public class EmulatorGui extends MapGui {
             this.resizeCanvas(Mth.ceil(width / 128d) + 2, Mth.ceil(height / 128d) + 2);
         }
 
+
+        this.scale = width / 256;
         this.width = width;
         this.height = height;
         this.updateImage();
+        CanvasUtils.clear(this.canvas);
     }
-
-
-
 
     @Override
     public void executeCommand(String command) {
@@ -216,13 +217,17 @@ public class EmulatorGui extends MapGui {
             return 0;
         }));
 
+        /*
         COMMANDS.register(literal("save").executes(x -> {
             // TODO; save game?
             return 0;
         }));
+        */
 
-        COMMANDS.register(literal("size")
-               // todo: change emu size?
-        );
+        COMMANDS.register(literal("scale").then(argument("scale", IntegerArgumentType.integer(1,3)).executes(x -> {
+            var scale = IntegerArgumentType.getInteger(x, "scale");
+            x.getSource().setSize(256*scale, 256*scale);
+            return 0;
+        })));
     }
 }
