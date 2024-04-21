@@ -31,7 +31,7 @@ public class EmulatorGui extends MapGui {
     private int xPos;
     private int yPos;
 
-    private int scale = 1;
+    private double scale = 1;
 
     @Nullable
     private EmulationController controller;
@@ -64,8 +64,8 @@ public class EmulatorGui extends MapGui {
 
     @Override
     public void onTick() {
-        this.xPos = (this.canvas.getWidth() - 160*2*scale) / 2;
-        this.yPos = (this.canvas.getHeight() - 144*2*scale) / 2;
+        this.xPos = (this.canvas.getWidth() - (int)(160*2*scale)) / 2;
+        this.yPos = (this.canvas.getHeight() - (int)(144*2*scale)) / 2;
 
         this.draw();
     }
@@ -170,7 +170,7 @@ public class EmulatorGui extends MapGui {
             CanvasUtils.clear(image, CanvasColor.YELLOW_HIGH);
         }
         else {
-            image = controller.getDisplay().render(BlockBoyDisplay.DISPLAY_WIDTH*2*scale, BlockBoyDisplay.DISPLAY_HEIGHT*2*scale);
+            image = controller.getDisplay().render((int)(BlockBoyDisplay.DISPLAY_WIDTH*2.0*scale), (int)(BlockBoyDisplay.DISPLAY_HEIGHT*2.0*scale));
         }
 
         CanvasUtils.draw(this.canvas, xPos, yPos, image);
@@ -186,8 +186,7 @@ public class EmulatorGui extends MapGui {
             this.resizeCanvas(Mth.ceil(width / 128d) + 2, Mth.ceil(height / 128d) + 2);
         }
 
-
-        this.scale = width / 256;
+        this.scale = width / 256.0;
         this.width = width;
         this.height = height;
         this.updateImage();
@@ -224,9 +223,10 @@ public class EmulatorGui extends MapGui {
         }));
         */
 
-        COMMANDS.register(literal("scale").then(argument("scale", IntegerArgumentType.integer(1,3)).executes(x -> {
+        COMMANDS.register(literal("scale").then(argument("scale", IntegerArgumentType.integer(1,5)).executes(x -> {
             var scale = IntegerArgumentType.getInteger(x, "scale");
-            x.getSource().setSize(256*scale, 256*scale);
+            double scale2 = 1.0+(scale-1)/2.0;
+            x.getSource().setSize((int)(256.0*scale2), (int)(256.0*scale2));
             return 0;
         })));
     }
