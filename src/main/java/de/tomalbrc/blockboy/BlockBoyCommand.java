@@ -9,6 +9,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.tomalbrc.blockboy.gui.EmulatorGui;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -23,7 +24,7 @@ import static net.minecraft.commands.Commands.argument;
 
 public class BlockBoyCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralArgumentBuilder<CommandSourceStack> blockboy = Commands.literal("blockboy");
+        LiteralArgumentBuilder<CommandSourceStack> blockboy = Commands.literal("blockboy").requires(Permissions.require("blockboy.command", 1));
 
         blockboy.then(argument("rom", StringArgumentType.word()).suggests(new RomSuggestionProvider()).executes(command -> {
             EmulatorGui gui = new EmulatorGui(command.getSource().getPlayer(), 256, 256);

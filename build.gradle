@@ -26,6 +26,8 @@ dependencies {
     // map canvas and sgui
     modImplementation include("eu.pb4:map-canvas-api:${project.mapcanvas_version}")
     modImplementation include("eu.pb4:sgui:${project.sgui_version}")
+
+    modImplementation include('me.lucko:fabric-permissions-api:0.2-SNAPSHOT')
 }
 
 processResources {
