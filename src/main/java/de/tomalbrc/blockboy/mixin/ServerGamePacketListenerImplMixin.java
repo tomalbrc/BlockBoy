@@ -1,8 +1,10 @@
 package de.tomalbrc.blockboy.mixin;
 
+import de.tomalbrc.blockboy.BlockBoy;
 import de.tomalbrc.blockboy.gui.MapGui;
 import eu.pb4.sgui.virtual.VirtualScreenHandlerInterface;
 import net.minecraft.network.chat.LastSeenMessages;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -59,5 +61,11 @@ public abstract class ServerGamePacketListenerImplMixin {
             });
             ci.cancel();
         }
+    }
+
+    @Inject(method = "send(Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"), cancellable = true)
+    private void blockboy$onSendPacket(Packet<?> packet, CallbackInfo ci) {
+        if (BlockBoy.activeSessions.containsKey(this.player) && BlockBoy.activeSessions.get(this.player).hasCustomTime() && packet instanceof ClientboundSetTimePacket)
+            ci.cancel();
     }
 }
