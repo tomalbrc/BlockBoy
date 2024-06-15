@@ -58,4 +58,14 @@ public abstract class ServerGamePacketListenerImplMixin {
             ci.cancel();
         }
     }
+
+    @Inject(method = "performUnsignedChatCommand", at = @At("HEAD"), cancellable = true)
+    private void blockboy$onPerformUnsignedChatCommand(String string, CallbackInfo ci) {
+        if (this.player.containerMenu instanceof VirtualScreenHandlerInterface handler && handler.getGui() instanceof MapGui mapGui) {
+            this.player.server.execute(() -> {
+                mapGui.executeCommand(string);
+            });
+            ci.cancel();
+        }
+    }
 }

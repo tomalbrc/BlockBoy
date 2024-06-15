@@ -1,5 +1,6 @@
 package eu.rekawek.coffeegb.emulator;
 
+import com.mojang.logging.LogUtils;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.rekawek.coffeegb.gpu.Display;
@@ -7,6 +8,7 @@ import eu.rekawek.coffeegb.gpu.Display;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.logging.Logger;
 
 public class BlockBoyDisplay implements Display, Runnable {
 
@@ -109,7 +111,7 @@ public class BlockBoyDisplay implements Display, Runnable {
                 try {
                     wait(10);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    LogUtils.getLogger().warn("Received Interruption trying to end emulation");
                 }
             }
         }
