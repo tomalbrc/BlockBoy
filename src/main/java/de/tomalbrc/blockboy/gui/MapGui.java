@@ -48,7 +48,7 @@ public class MapGui extends HotbarGui {
         player.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, GameType.ADVENTURE.getId()));
 
         player.connection.send(this.entity.getAddEntityPacket());
-        //player.setInvisible(true);
+
         player.connection.send(new ClientboundSetEntityDataPacket(this.entity.getId(), this.entity.getEntityData().getNonDefaultValues()));
         player.connection.send(new ClientboundMoveEntityPacket.Rot(player.getId(), (byte) 0, (byte) 0, player.onGround()));
 

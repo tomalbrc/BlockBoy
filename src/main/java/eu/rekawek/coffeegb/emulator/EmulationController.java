@@ -1,11 +1,12 @@
 package eu.rekawek.coffeegb.emulator;
 
+import de.tomalbrc.blockboy.BlockBoy;
 import eu.rekawek.coffeegb.CartridgeOptions;
 import eu.rekawek.coffeegb.Gameboy;
 import eu.rekawek.coffeegb.controller.ButtonListener;
 import eu.rekawek.coffeegb.memory.cart.Cartridge;
-import eu.rekawek.coffeegb.serial.SerialEndpoint;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +29,12 @@ public class EmulationController {
 
     private ServerPlayer player;
 
+    private StreamSerialEndpoint streamSerial = new StreamSerialEndpoint();
+
+    private Thread serialThread;
+
+    private Player linkedPlayer = null;
+
     public EmulationController(CartridgeOptions options, File initialRom, ServerPlayer player) {
         this.options = options;
         this.currentRom = initialRom;
@@ -41,6 +48,31 @@ public class EmulationController {
         return this.display;
     }
 
+    public void unlink() throws IOException {
+        boolean wasAlive = serialThread.isAlive();
+        if (wasAlive) {
+            serialThread.interrupt();
+            streamSerial.stop();
+
+            if (linkedPlayer != null && BlockBoy.activeSessions.containsKey(linkedPlayer))
+                BlockBoy.activeSessions.get(linkedPlayer).getController().unlink();
+        }
+    }
+
+    public void link(EmulationController friend) throws IOException {
+        this.streamSerial.getInputStream().connect(friend.streamSerial.getOutputStream());
+        this.streamSerial.getOutputStream().connect(friend.streamSerial.getInputStream());
+
+        this.linkedPlayer = friend.player;
+
+        friend.serialThread = new Thread(this.streamSerial);
+        this.serialThread = new Thread(friend.streamSerial);
+
+        friend.serialThread.start();
+        this.serialThread.start();
+    }
+
+
     public void startEmulation() {
         Cartridge newCart;
         try {
@@ -53,7 +85,7 @@ public class EmulationController {
         stopEmulation();
         cart = newCart;
         gameboy = new Gameboy(cart);
-        gameboy.init(display, null, SerialEndpoint.NULL_ENDPOINT);
+        gameboy.init(display, null, streamSerial);
         gameboy.registerTickListener(new TimingTicker());
 
         new Thread(display).start();
@@ -76,6 +108,7 @@ public class EmulationController {
             cart = null;
         }
 
+        streamSerial.stop();
         display.stop();
     }
 
