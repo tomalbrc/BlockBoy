@@ -59,7 +59,6 @@ public class MapGui extends HotbarGui {
         player.connection.send(new ClientboundSetPassengersPacket(buf));
         //player.connection.send(new ClientboundSetCameraPacket(this.entity));
 
-
         for (int i = 0; i < 9; i++) {
             this.setSlot(i, new ItemStack(Items.AIR));
         }
@@ -80,7 +79,7 @@ public class MapGui extends HotbarGui {
         this.canvas.addPlayer(player);
         this.virtualDisplay.addPlayer(player);
 
-        this.entity.setPos(pos.getX() - width / 2d + 1, pos.getY() - height / 2d - 0.5, pos.getZ());
+        this.entity.setPos(pos.getX() - width / 2d + 1, pos.getY() - height / 2d, pos.getZ()+0.5);
     }
 
     protected void destroy() {

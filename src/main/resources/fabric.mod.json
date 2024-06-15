@@ -22,6 +22,7 @@
   "mixins": [
     "blockboy.mixins.json"
   ],
+  "accessWidener": "blockboy.accesswidener",
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
