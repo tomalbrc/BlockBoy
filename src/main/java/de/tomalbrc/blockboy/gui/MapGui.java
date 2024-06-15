@@ -11,6 +11,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
@@ -47,7 +49,8 @@ public class MapGui extends HotbarGui {
 
         player.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, GameType.ADVENTURE.getId()));
 
-        player.connection.send(this.entity.getAddEntityPacket());
+        var p = new ClientboundAddEntityPacket(entity.getId(), entity.getUUID(), entity.position().x(), entity.position().y(), entity.position().z(), entity.getXRot(), entity.getYRot(), entity.getType(), 0, entity.getDeltaMovement(), entity.getYHeadRot());
+        player.connection.send(p);
 
         player.connection.send(new ClientboundSetEntityDataPacket(this.entity.getId(), this.entity.getEntityData().getNonDefaultValues()));
         player.connection.send(new ClientboundMoveEntityPacket.Rot(player.getId(), (byte) 0, (byte) 0, player.onGround()));
@@ -79,7 +82,7 @@ public class MapGui extends HotbarGui {
         this.canvas.addPlayer(player);
         this.virtualDisplay.addPlayer(player);
 
-        this.entity.setPos(pos.getX() - width / 2d + 1, pos.getY() - height / 2d, pos.getZ()+0.8f);
+        this.entity.setPos(pos.getX() - width / 2d + 1, pos.getY() - height / 2d, pos.getZ()+0.3);
     }
 
     protected void destroy() {
