@@ -3,7 +3,6 @@ package de.tomalbrc.blockboy.mixin;
 import de.tomalbrc.blockboy.gui.MapGui;
 import eu.pb4.sgui.virtual.VirtualScreenHandlerInterface;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.spongepowered.asm.mixin.Mixin;
