@@ -22,15 +22,11 @@ public abstract class ServerGamePacketListenerImplMixin {
     @Shadow
     public ServerPlayer player;
 
-    @Shadow
-    @Final
-    private MinecraftServer server;
-
 
     @Inject(method = "handleCustomCommandSuggestions", at = @At("HEAD"), cancellable = true)
     private void blockboy$handleCustomCommandSuggestions(ServerboundCommandSuggestionPacket packet, CallbackInfo ci) {
         if (this.player.containerMenu instanceof VirtualScreenHandlerInterface handler && handler.getGui() instanceof MapGui computerGui) {
-            this.server.execute(() -> {
+            this.player.server.execute(() -> {
                 computerGui.onCommandSuggestion(packet.getId(), packet.getCommand());
             });
             ci.cancel();
@@ -48,7 +44,7 @@ public abstract class ServerGamePacketListenerImplMixin {
     @Inject(method = "handlePlayerInput", at = @At("HEAD"), cancellable = true)
     private void blockboy$onPlayerInput(ServerboundPlayerInputPacket packet, CallbackInfo ci) {
         if (this.player.containerMenu instanceof VirtualScreenHandlerInterface handler && handler.getGui() instanceof MapGui computerGui) {
-            this.server.execute(() -> {
+            this.player.server.execute(() -> {
                 computerGui.onPlayerInput(packet.getXxa(), packet.getZza(), packet.isJumping(), packet.isShiftKeyDown());
             });
             ci.cancel();
@@ -58,7 +54,7 @@ public abstract class ServerGamePacketListenerImplMixin {
     @Inject(method = "handlePlayerCommand", at = @At("HEAD"), cancellable = true)
     private void blockboy$onClientCommand(ServerboundPlayerCommandPacket packet, CallbackInfo ci) {
         if (this.player.containerMenu instanceof VirtualScreenHandlerInterface handler && handler.getGui() instanceof MapGui computerGui) {
-            this.server.execute(() -> {
+            this.player.server.execute(() -> {
                 computerGui.onPlayerCommand(packet.getId(), packet.getAction(), packet.getData());
             });
             ci.cancel();
