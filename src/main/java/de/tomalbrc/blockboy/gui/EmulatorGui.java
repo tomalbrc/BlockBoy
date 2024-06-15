@@ -82,11 +82,6 @@ public class EmulatorGui extends MapGui {
         this.controller.startEmulation();
     }
 
-    protected void updateImage() {
-        this.setDistance(-2);
-        this.drawLoading();
-    }
-
     @Override
     public void onTick() {
         this.xPos = (this.canvas.getWidth() - (int)(160*2*scale)) / 2;

@@ -62,6 +62,7 @@ public class MapGui extends HotbarGui {
         player.connection.send(new ClientboundSetPassengersPacket(buf));
         //player.connection.send(new ClientboundSetCameraPacket(this.entity));
 
+
         for (int i = 0; i < 9; i++) {
             this.setSlot(i, new ItemStack(Items.AIR));
         }
