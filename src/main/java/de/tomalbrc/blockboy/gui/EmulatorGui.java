@@ -16,6 +16,8 @@ import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils;
+import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
 import eu.rekawek.coffeegb.CartridgeOptions;
 import eu.rekawek.coffeegb.controller.ButtonListener;
 import eu.rekawek.coffeegb.emulator.BlockBoyDisplay;
@@ -24,6 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
+import net.minecraft.network.protocol.game.ClientboundRotateHeadPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTimePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -63,6 +66,10 @@ public class EmulatorGui extends MapGui {
 
         player.connection.send(new ClientboundCommandsPacket((RootCommandNode) COMMANDS.getRoot()));
 
+        player.connection.send(new ClientboundRotateHeadPacket(player, (byte)0));
+
+        
+
         // stop rain
         player.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.START_RAINING, 1));
 
@@ -80,11 +87,6 @@ public class EmulatorGui extends MapGui {
     public void playRom(File rom) {
         this.controller = new EmulationController(new CartridgeOptions(), rom, player);
         this.controller.startEmulation();
-    }
-
-    protected void updateImage() {
-        this.setDistance(-2);
-        this.drawLoading();
     }
 
     @Override
@@ -167,23 +169,7 @@ public class EmulatorGui extends MapGui {
                 controller.released(type == EntityInteraction.ATTACK ? ButtonListener.Button.START : ButtonListener.Button.SELECT);
             }
         }, 50);
-        return super.onClickEntity(entityId, type, isSneaking, interactionPos);
-    }
-
-    private void drawLoading() {
-        var text = "Loading...";
-        var size = (int) Math.min(this.height / 128d, this.width / 128d) * 16;
-        var width = DefaultFonts.VANILLA.getTextWidth(text, size);
-
-        CanvasUtils.fill(this.canvas,
-                (this.width - width) / 2 - size + 128,
-                (this.height - size) / 2 - size + 128,
-                (this.width - width) / 2 + size + width + 128,
-                (this.height - size) / 2 + size * 2 + 128, CanvasColor.BLACK_LOW);
-
-        DefaultFonts.VANILLA.drawText(this.canvas, text, (this.width - width) / 2 + 128, (this.height - size) / 2 + 128, size, CanvasColor.WHITE_HIGH);
-
-        this.canvas.sendUpdates();
+        return true;
     }
 
     private void draw() {

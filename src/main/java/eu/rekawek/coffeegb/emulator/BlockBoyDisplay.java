@@ -109,7 +109,7 @@ public class BlockBoyDisplay implements Display, Runnable {
                 try {
                     wait(10);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+
                 }
             }
         }
