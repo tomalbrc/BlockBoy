@@ -27,8 +27,13 @@ public class BlockBoyCommand {
         LiteralArgumentBuilder<CommandSourceStack> blockboy = Commands.literal("blockboy").requires(Permissions.require("blockboy.command", 1));
 
         blockboy.then(argument("rom", StringArgumentType.word()).suggests(new RomSuggestionProvider()).executes(command -> {
-            EmulatorGui gui = new EmulatorGui(command.getSource().getPlayer(), 256, 256);
-            gui.playRom(RomSuggestionProvider.resolve(StringArgumentType.getString(command, "rom")));
+            try {
+                EmulatorGui gui = new EmulatorGui(command.getSource().getPlayer(), 256, 256);
+                gui.playRom(RomSuggestionProvider.resolve(StringArgumentType.getString(command, "rom")));
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
             return 0;
         }));
 
