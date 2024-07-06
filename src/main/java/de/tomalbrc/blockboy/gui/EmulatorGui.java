@@ -14,10 +14,7 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import de.tomalbrc.blockboy.BlockBoy;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils;
-import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
 import eu.rekawek.coffeegb.CartridgeOptions;
 import eu.rekawek.coffeegb.controller.ButtonListener;
 import eu.rekawek.coffeegb.emulator.BlockBoyDisplay;
@@ -33,6 +30,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -49,10 +47,10 @@ public class EmulatorGui extends MapGui {
 
     private double scale = 1;
 
-    @Nullable
+    @NotNull
     private EmulationController controller;
 
-    private ServerPlayer player;
+    private final ServerPlayer player;
 
     private boolean customTime = false;
 
@@ -173,7 +171,7 @@ public class EmulatorGui extends MapGui {
     }
 
     private void draw() {
-        CanvasImage image = null;
+        CanvasImage image;
         if (controller == null) {
             image = new CanvasImage(this.canvas.getWidth(), this.canvas.getHeight());
             CanvasUtils.clear(image, CanvasColor.YELLOW_HIGH);
