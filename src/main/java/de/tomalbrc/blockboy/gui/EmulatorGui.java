@@ -14,10 +14,7 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import de.tomalbrc.blockboy.BlockBoy;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils;
-import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
 import eu.rekawek.coffeegb.CartridgeOptions;
 import eu.rekawek.coffeegb.controller.ButtonListener;
 import eu.rekawek.coffeegb.emulator.BlockBoyDisplay;
@@ -68,7 +65,7 @@ public class EmulatorGui extends MapGui {
 
         player.connection.send(new ClientboundRotateHeadPacket(player, (byte)0));
 
-        
+
 
         // stop rain
         player.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.START_RAINING, 1));
