@@ -96,4 +96,9 @@ public abstract class ServerGamePacketListenerImplMixin {
             ci.cancel();
         }
     }
+
+    @Inject(method = "handleAnimate", at = @At("HEAD"))
+    private void blockboy$handleAnimate(ServerboundSwingPacket serverboundSwingPacket, CallbackInfo ci) {
+        BlockBoy.activeSessions.get(player).onClickEntity(0, HotbarGui.EntityInteraction.ATTACK, false, Vec3.ZERO);
+    }
 }

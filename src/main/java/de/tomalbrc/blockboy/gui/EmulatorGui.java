@@ -109,57 +109,57 @@ public class EmulatorGui extends MapGui {
     @Override
     public void onPlayerInput(float deltaX, float deltaZ, boolean jumping, boolean shiftKeyDown) {
         if (jumping) {
-            controller.pressed(ButtonListener.Button.A);
-            wasJumping = true;
-        } else if (wasJumping) {
-            controller.released(ButtonListener.Button.A);
-            wasJumping = false;
+            this.controller.pressed(ButtonListener.Button.A);
+            this.wasJumping = true;
+        } else if (this.wasJumping) {
+            this.controller.released(ButtonListener.Button.A);
+            this.wasJumping = false;
         }
 
         if (shiftKeyDown) {
-            wasSneaking = true;
-            controller.pressed(ButtonListener.Button.B);
-        } else if (wasJumping) {
-            controller.released(ButtonListener.Button.B);
-            wasSneaking = false;
+            this.wasSneaking = true;
+            this.controller.pressed(ButtonListener.Button.B);
+        } else if (this.wasJumping) {
+            this.controller.released(ButtonListener.Button.B);
+            this.wasSneaking = false;
         }
 
         if (deltaZ > 0) {
-            zdirection = Direction.NORTH;
-            controller.pressed(ButtonListener.Button.UP);
-        } else if (zdirection == Direction.NORTH) {
-            controller.released(ButtonListener.Button.UP);
-            zdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
+            this.zdirection = Direction.NORTH;
+            this.controller.pressed(ButtonListener.Button.UP);
+        } else if (this.zdirection == Direction.NORTH) {
+            this.controller.released(ButtonListener.Button.UP);
+            this.zdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
         }
 
         if (deltaZ < 0) {
-            zdirection = Direction.SOUTH;
-            controller.pressed(ButtonListener.Button.DOWN);
-        } else if (zdirection == Direction.SOUTH) {
-            controller.released(ButtonListener.Button.DOWN);
-            zdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
+            this.zdirection = Direction.SOUTH;
+            this.controller.pressed(ButtonListener.Button.DOWN);
+        } else if (this.zdirection == Direction.SOUTH) {
+            this.controller.released(ButtonListener.Button.DOWN);
+            this.zdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
         }
 
         if (deltaX < 0) {
-            xdirection = Direction.EAST;
-            controller.pressed(ButtonListener.Button.RIGHT);
-        } else if (xdirection == Direction.EAST) {
-            controller.released(ButtonListener.Button.RIGHT);
-            xdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
+            this.xdirection = Direction.EAST;
+            this.controller.pressed(ButtonListener.Button.RIGHT);
+        } else if (this.xdirection == Direction.EAST) {
+            this.controller.released(ButtonListener.Button.RIGHT);
+            this.xdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
         }
 
         if (deltaX > 0) {
-            xdirection = Direction.WEST;
-            controller.pressed(ButtonListener.Button.LEFT);
-        } else if (xdirection == Direction.WEST) {
-            controller.released(ButtonListener.Button.LEFT);
-            xdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
+            this.xdirection = Direction.WEST;
+            this.controller.pressed(ButtonListener.Button.LEFT);
+        } else if (this.xdirection == Direction.WEST) {
+            this.controller.released(ButtonListener.Button.LEFT);
+            this.xdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
         }
     }
 
     @Override
     public boolean onClickEntity(int entityId, EntityInteraction type, boolean isSneaking, @Nullable Vec3 interactionPos) {
-        controller.pressed(type == EntityInteraction.ATTACK ? ButtonListener.Button.START : ButtonListener.Button.SELECT);
+        this.controller.pressed(type == EntityInteraction.ATTACK ? ButtonListener.Button.START : ButtonListener.Button.SELECT);
         new java.util.Timer().schedule(new java.util.TimerTask() {
             @Override
             public void run() {

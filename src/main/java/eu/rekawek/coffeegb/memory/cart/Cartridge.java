@@ -89,7 +89,7 @@ public class Cartridge implements AddressSpace, Serializable {
         LOG.debug("ROM banks: {}, RAM banks: {}", romBanks, ramBanks);
 
         if (type.isBattery() && supportBatterySaves) {
-            battery = new FileBattery(romFile.getParentFile(), FilenameUtils.removeExtension(romFile.getName())+ "_" + playerUUID.toString(), 0x2000 * ramBanks);
+            battery = new FileBattery(FilenameUtils.removeExtension(romFile.getName())+ "_" + playerUUID.toString(), 0x2000 * ramBanks);
         } else {
             battery = Battery.NULL_BATTERY;
         }
