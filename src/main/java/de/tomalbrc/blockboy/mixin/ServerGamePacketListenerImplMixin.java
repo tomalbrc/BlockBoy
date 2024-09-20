@@ -5,6 +5,7 @@ import de.tomalbrc.blockboy.gui.MapGui;
 import eu.pb4.sgui.api.gui.HotbarGui;
 import eu.pb4.sgui.virtual.VirtualScreenHandlerInterface;
 import net.minecraft.network.chat.LastSeenMessages;
+import net.minecraft.network.protocol.PacketUtils;
 import net.minecraft.network.protocol.game.ServerboundChatCommandSignedPacket;
 import net.minecraft.network.protocol.game.ServerboundCommandSuggestionPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
@@ -97,5 +98,10 @@ public abstract class ServerGamePacketListenerImplMixin {
 
             ci.cancel();
         }
+    }
+
+    @Inject(method = "handleAnimate", at = @At("HEAD"))
+    private void blockboy$handleAnimate(ServerboundSwingPacket serverboundSwingPacket, CallbackInfo ci) {
+        BlockBoy.activeSessions.get(player).onClickEntity(0, HotbarGui.EntityInteraction.ATTACK, false, Vec3.ZERO);
     }
 }

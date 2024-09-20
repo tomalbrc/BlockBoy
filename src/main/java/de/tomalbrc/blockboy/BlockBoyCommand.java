@@ -46,9 +46,7 @@ public class BlockBoyCommand {
         @Override
         public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context,
                                                              SuggestionsBuilder builder) {
-
-            Path path = FabricLoader.getInstance().getGameDir().resolve("roms/");
-
+            Path path = FabricLoader.getInstance().getGameDir().resolve(ModConfig.getInstance().romsPath);
             try {
                 if (!path.toFile().exists())
                     Files.createDirectories(path); // Create parent directories if they don't exist
@@ -67,7 +65,7 @@ public class BlockBoyCommand {
         }
 
         public static File resolve(String filename) {
-            Path path = FabricLoader.getInstance().getGameDir().resolve("roms/");
+            Path path = FabricLoader.getInstance().getGameDir().resolve(ModConfig.getInstance().romsPath);
             return path.resolve(filename).toFile();
         }
     }

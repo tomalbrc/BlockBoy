@@ -1,5 +1,7 @@
 package eu.rekawek.coffeegb.memory.cart.battery;
 
+import de.tomalbrc.blockboy.ModConfig;
+import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -9,6 +11,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class FileBattery implements Battery {
 
@@ -22,8 +25,9 @@ public class FileBattery implements Battery {
 
     private boolean isDirty;
 
-    public FileBattery(File parent, String baseName, int ramSize) {
-        this.saveFile = new File(parent, baseName + ".sav");
+    public FileBattery(String baseName, int ramSize) {
+        var dir = FabricLoader.getInstance().getGameDir().resolve(ModConfig.getInstance().savesPath).resolve(ModConfig.getInstance().savesPath).toFile();
+        this.saveFile = new File(dir, baseName + ".sav");
         this.clockBuffer = new byte[11 * 4];
         this.ramBuffer = new byte[ramSize];
     }
