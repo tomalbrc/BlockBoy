@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.6-SNAPSHOT'
+    id 'fabric-loom' version '1.7-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -16,6 +16,10 @@ loom {
 
 repositories {
     maven { url "https://maven.nucleoid.xyz/" }
+    maven { url "https://maven.maxhenkel.de/repository/public" }
+    maven {
+        url = "https://api.modrinth.com/maven"
+    }
 }
 
 dependencies {
@@ -31,7 +35,10 @@ dependencies {
     modImplementation include("eu.pb4:map-canvas-api:${project.mapcanvas_version}")
     modImplementation include("eu.pb4:sgui:${project.sgui_version}")
 
-    modImplementation include('me.lucko:fabric-permissions-api:0.2-SNAPSHOT')
+    modImplementation include('me.lucko:fabric-permissions-api:0.3.1')
+
+    implementation include("de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}")
+    modRuntimeOnly "maven.modrinth:simple-voice-chat:fabric-${voicechat_mod_version}"
 }
 
 processResources {

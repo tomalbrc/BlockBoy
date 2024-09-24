@@ -17,6 +17,9 @@
   "entrypoints": {
     "main": [
       "de.tomalbrc.blockboy.BlockBoy"
+    ],
+    "voicechat": [
+      "de.tomalbrc.blockboy.SVCPlugin"
     ]
   },
   "mixins": [
