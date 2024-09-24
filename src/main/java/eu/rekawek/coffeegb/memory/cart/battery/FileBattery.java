@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class FileBattery implements Battery {
 
