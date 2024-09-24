@@ -15,9 +15,9 @@ public class BlockBoySoundOutput implements SoundOutput, Runnable {
 
     private static final int BUFFER_SIZE = 960;
 
-    private static final int DIVIDER = (int) (Gameboy.TICKS_PER_SEC / SAMPLE_RATE);
+    private static final int DIVIDER = (Gameboy.TICKS_PER_SEC / SAMPLE_RATE);
 
-    private static final long NANOS_IN_SEC = 1000000000L;
+    private static final long NANOS_IN_SEC = 1_000_000_000L;
 
     private static final long BUFFER_LENGTH_NANOS = (BUFFER_SIZE / 2) * NANOS_IN_SEC / SAMPLE_RATE;
 
@@ -52,11 +52,17 @@ public class BlockBoySoundOutput implements SoundOutput, Runnable {
 
     @Override
     public void start() {
-        if (SVCPlugin.API.getConnectionOf(this.player.getUUID()) == null)
+        if (SVCPlugin.API.getConnectionOf(this.player.getUUID()) == null || this.isPlaying) {
             return;
+        }
 
-        this.channel = SVCPlugin.API.createStaticAudioChannel(UUID.randomUUID(), SVCPlugin.API.fromServerLevel(level), SVCPlugin.API.getConnectionOf(this.player.getUUID()));
-        this.audioPlayer = SVCPlugin.API.createAudioPlayer(this.channel, SVCPlugin.API.createEncoder(), ()-> finalBuffer);
+        if (this.channel == null) {
+            this.channel = SVCPlugin.API.createStaticAudioChannel(UUID.randomUUID(), SVCPlugin.API.fromServerLevel(level), SVCPlugin.API.getConnectionOf(this.player.getUUID()));
+        }
+
+        if (this.audioPlayer == null) {
+            this.audioPlayer = SVCPlugin.API.createAudioPlayer(this.channel, SVCPlugin.API.createEncoder(), ()-> doStop ? null : finalBuffer);
+        }
 
         this.audioPlayer.startPlaying();
         this.isPlaying = true;
@@ -70,6 +76,7 @@ public class BlockBoySoundOutput implements SoundOutput, Runnable {
     public void stop() {
         if (this.audioPlayer != null) this.audioPlayer.stopPlaying();
         this.isPlaying = false;
+        this.doStop = true;
     }
 
     @Override
@@ -114,6 +121,7 @@ public class BlockBoySoundOutput implements SoundOutput, Runnable {
             } else {
                 fill(lockedBuffer, localPos, finalBuffer);
             }
+
             writeStart = System.nanoTime();
         }
     }
