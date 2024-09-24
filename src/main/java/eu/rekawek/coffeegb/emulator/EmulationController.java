@@ -1,10 +1,13 @@
 package eu.rekawek.coffeegb.emulator;
 
 import de.tomalbrc.blockboy.BlockBoy;
+import de.tomalbrc.blockboy.BlockBoySoundOutput;
 import eu.rekawek.coffeegb.CartridgeOptions;
 import eu.rekawek.coffeegb.Gameboy;
 import eu.rekawek.coffeegb.controller.ButtonListener;
 import eu.rekawek.coffeegb.memory.cart.Cartridge;
+import eu.rekawek.coffeegb.sound.SoundOutput;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -13,7 +16,9 @@ import java.io.IOException;
 
 public class EmulationController {
 
+
     private final BlockBoyDisplay display;
+    private final SoundOutput sound;
 
     private final CartridgeOptions options;
 
@@ -41,6 +46,7 @@ public class EmulationController {
 
         this.type = Cartridge.GameboyType.AUTOMATIC;
         this.display = new BlockBoyDisplay(1, false);
+        this.sound = FabricLoader.getInstance().isModLoaded("voicechat") ? new BlockBoySoundOutput(player) : SoundOutput.NULL_OUTPUT;
         this.player = player;
     }
 
@@ -85,11 +91,11 @@ public class EmulationController {
         stopEmulation();
         cart = newCart;
         gameboy = new Gameboy(cart);
-        gameboy.init(display, null, streamSerial);
+        gameboy.init(display, sound, streamSerial);
         gameboy.registerTickListener(new TimingTicker());
 
         new Thread(display).start();
-        //new Thread(sound).start(); // TODO: add sounds? using noteblocks? doesn't seem feasible
+        if (sound != SoundOutput.NULL_OUTPUT) new Thread((BlockBoySoundOutput)sound).start(); // TODO: add sounds? using noteblocks? doesn't seem feasible
         new Thread(gameboy).start();
         isRunning = true;
     }

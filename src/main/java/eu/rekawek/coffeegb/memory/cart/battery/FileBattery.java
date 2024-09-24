@@ -26,7 +26,7 @@ public class FileBattery implements Battery {
     private boolean isDirty;
 
     public FileBattery(String baseName, int ramSize) {
-        var dir = FabricLoader.getInstance().getGameDir().resolve(ModConfig.getInstance().savesPath).resolve(ModConfig.getInstance().savesPath).toFile();
+        var dir = FabricLoader.getInstance().getGameDir().resolve(ModConfig.getInstance().savesPath).toFile();
         this.saveFile = new File(dir, baseName + ".sav");
         this.clockBuffer = new byte[11 * 4];
         this.ramBuffer = new byte[ramSize];

@@ -40,15 +40,15 @@ public class Sound implements AddressSpace, Serializable {
     public void init(SoundOutput output) {
         this.output = output;
         if (enabled) {
-            //output.start();
+            output.start();
         } else {
-            //output.stop();
+            output.stop();
         }
     }
 
     public void tick() {
         if (!enabled) {
-            //output.play(0, 0);
+            output.play(0, 0);
             return;
         }
         for (int i = 0; i < allModes.length; i++) {
@@ -76,7 +76,7 @@ public class Sound implements AddressSpace, Serializable {
         left *= ((volumes >> 4) & 0b111);
         right *= (volumes & 0b111);
 
-        //output.play((byte) left, (byte) right);
+        output.play((byte) left, (byte) right);
     }
 
     private AddressSpace getAddressSpace(int address) {
@@ -157,11 +157,11 @@ public class Sound implements AddressSpace, Serializable {
         for (AbstractSoundMode m : allModes) {
             m.start();
         }
-        //output.start();
+        output.start();
     }
 
     private void stop() {
-        //output.stop();
+        output.stop();
         for (AbstractSoundMode s : allModes) {
             s.stop();
         }
