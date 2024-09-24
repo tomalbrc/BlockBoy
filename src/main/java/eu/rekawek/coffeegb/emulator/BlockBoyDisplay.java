@@ -8,7 +8,6 @@ import eu.rekawek.coffeegb.gpu.Display;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.logging.Logger;
 
 public class BlockBoyDisplay implements Display, Runnable {
 
