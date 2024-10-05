@@ -22,7 +22,7 @@ public class EmulationController {
 
     private final CartridgeOptions options;
 
-    private File currentRom;
+    private final File currentRom;
 
     private Cartridge cart;
 
@@ -30,11 +30,11 @@ public class EmulationController {
 
     private boolean isRunning;
 
-    private Cartridge.GameboyType type;
+    private final Cartridge.GameboyType type;
 
-    private ServerPlayer player;
+    private final ServerPlayer player;
 
-    private StreamSerialEndpoint streamSerial = new StreamSerialEndpoint();
+    private final StreamSerialEndpoint streamSerial = new StreamSerialEndpoint();
 
     private Thread serialThread;
 
@@ -60,8 +60,10 @@ public class EmulationController {
             serialThread.interrupt();
             streamSerial.stop();
 
-            if (linkedPlayer != null && BlockBoy.activeSessions.containsKey(linkedPlayer))
-                BlockBoy.activeSessions.get(linkedPlayer).getController().unlink();
+            if (linkedPlayer != null && BlockBoy.activeSessions.containsKey(linkedPlayer)) {
+                var controller = BlockBoy.activeSessions.get(linkedPlayer).getController();
+                if (controller != null) controller.unlink();
+            }
         }
     }
 
@@ -116,6 +118,7 @@ public class EmulationController {
 
         streamSerial.stop();
         display.stop();
+        sound.stop();
     }
 
     private Cartridge loadRom(File rom) throws IOException {
