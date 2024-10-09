@@ -4,8 +4,7 @@ import de.tomalbrc.blockboy.BlockBoy;
 import de.tomalbrc.blockboy.gui.MapGui;
 import eu.pb4.sgui.api.gui.HotbarGui;
 import eu.pb4.sgui.virtual.VirtualScreenHandlerInterface;
-import net.minecraft.network.DisconnectionDetails;
-import net.minecraft.network.DisconnectionDetails;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.LastSeenMessages;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
@@ -33,7 +32,7 @@ public abstract class ServerGamePacketListenerImplMixin {
     private MinecraftServer server;
 
     @Inject(method = "onDisconnect", at = @At("HEAD"))
-    private void blockboy$handleDisconnect(DisconnectionDetails disconnectionDetails, CallbackInfo ci) {
+    private void blockboy$handleDisconnect(Component component, CallbackInfo ci) {
         if (BlockBoy.activeSessions.containsKey(this.player)) {
             Objects.requireNonNull(BlockBoy.activeSessions.get(player).getController()).stopEmulation();
             Objects.requireNonNull(BlockBoy.activeSessions.get(player)).close();
