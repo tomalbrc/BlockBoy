@@ -4,6 +4,8 @@ import de.tomalbrc.blockboy.BlockBoy;
 import de.tomalbrc.blockboy.gui.MapGui;
 import eu.pb4.sgui.api.gui.HotbarGui;
 import eu.pb4.sgui.virtual.VirtualScreenHandlerInterface;
+import net.minecraft.network.DisconnectionDetails;
+import net.minecraft.network.DisconnectionDetails;
 import net.minecraft.network.chat.LastSeenMessages;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
@@ -19,6 +21,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Objects;
+
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class ServerGamePacketListenerImplMixin {
     @Shadow
@@ -27,6 +31,15 @@ public abstract class ServerGamePacketListenerImplMixin {
     @Shadow
     @Final
     private MinecraftServer server;
+
+    @Inject(method = "onDisconnect", at = @At("HEAD"))
+    private void blockboy$handleDisconnect(DisconnectionDetails disconnectionDetails, CallbackInfo ci) {
+        if (BlockBoy.activeSessions.containsKey(this.player)) {
+            Objects.requireNonNull(BlockBoy.activeSessions.get(player).getController()).stopEmulation();
+            Objects.requireNonNull(BlockBoy.activeSessions.get(player)).close();
+            BlockBoy.activeSessions.remove(player);
+        }
+    }
 
     @Inject(method = "handleCustomCommandSuggestions", at = @At("HEAD"), cancellable = true)
     private void blockboy$handleCustomCommandSuggestions(ServerboundCommandSuggestionPacket packet, CallbackInfo ci) {
