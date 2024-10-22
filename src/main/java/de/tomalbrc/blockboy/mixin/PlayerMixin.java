@@ -2,6 +2,7 @@ package de.tomalbrc.blockboy.mixin;
 
 import de.tomalbrc.blockboy.gui.MapGui;
 import eu.pb4.sgui.virtual.VirtualScreenHandlerInterface;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -16,8 +17,8 @@ public class PlayerMixin {
     @Shadow
     public AbstractContainerMenu containerMenu;
 
-    @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z", shift = At.Shift.BEFORE))
-    private void blockboy$closeOnDamage(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z", shift = At.Shift.BEFORE))
+    private void blockboy$closeOnDamage(ServerLevel serverLevel, DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
         if (f > 0 && this.containerMenu instanceof VirtualScreenHandlerInterface handler && handler.getGui() instanceof MapGui mapGui) {
             mapGui.close();
         }

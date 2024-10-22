@@ -221,7 +221,7 @@ public class EmulatorGui extends MapGui {
 
             var player = x.getSource().getPlayer();
             if (player != null) {
-                player.connection.send(new ClientboundSetTimePacket(player.level().getGameTime(), player.level().getDayTime(), player.level().getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)));
+                player.connection.send(new ClientboundSetTimePacket(player.level().getGameTime(), player.level().getDayTime(), player.getServer().getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)));
                 if (player.level().isRaining())
                     player.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.STOP_RAINING, 0));
             }
@@ -234,7 +234,7 @@ public class EmulatorGui extends MapGui {
             var name = StringArgumentType.getString(x, "friend");
             var friend = player.server.getPlayerList().getPlayerByName(name);
 
-            if (player != null && friend != null) {
+            if (friend != null) {
                 var s1 = BlockBoy.activeSessions.get(player);
                 var s2 = BlockBoy.activeSessions.get(friend);
                 if (s2 == null) {

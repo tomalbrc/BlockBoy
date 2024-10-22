@@ -15,14 +15,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumSet;
+import java.util.Set;
 
 public class MapGui extends HotbarGui {
     public final Entity entity;
@@ -71,7 +71,7 @@ public class MapGui extends HotbarGui {
     protected void resizeCanvas(int width, int height) {
         this.destroy();
         this.initialize(width, height);
-        this.player.connection.send(new ClientboundTeleportEntityPacket(this.entity));
+        this.player.connection.send(ClientboundTeleportEntityPacket.teleport(this.entity.getId(), PositionMoveRotation.of(this.entity), Set.of(), false));
     }
 
     protected void initialize(int width, int height) {
@@ -102,7 +102,7 @@ public class MapGui extends HotbarGui {
             this.player.connection.send(new ClientboundRemoveEntitiesPacket(this.additionalEntities));
         }
         this.player.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, this.player.gameMode.getGameModeForPlayer().getId()));
-        this.player.connection.send(new ClientboundPlayerPositionPacket(this.player.getX(), this.player.getY(), this.player.getZ(), this.player.getYRot(), this.player.getXRot(), EnumSet.noneOf(RelativeMovement.class), 0));
+        this.player.connection.send(new ClientboundPlayerPositionPacket(this.player.getId(), PositionMoveRotation.of(this.player), Set.of()));
 
         super.onClose();
     }
@@ -123,7 +123,7 @@ public class MapGui extends HotbarGui {
 
     public void setDistance(double i) {
         this.entity.setPos(this.entity.getX(), this.entity.getY(), this.pos.getZ() - i);
-        this.player.connection.send(new ClientboundTeleportEntityPacket(this.entity));
+        this.player.connection.send(new ClientboundTeleportEntityPacket(this.entity.getId(), new PositionMoveRotation(this.entity.position(), Vec3.ZERO, this.player.getYRot(), this.player.getXRot()), Set.of(), false));
     }
 
     @Override
