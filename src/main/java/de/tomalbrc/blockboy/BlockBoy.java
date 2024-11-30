@@ -9,9 +9,10 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BlockBoy implements ModInitializer {
-    public static Map<Player, EmulatorGui> activeSessions = new Reference2ObjectArrayMap<>();
+    public static Map<Player, EmulatorGui> activeSessions = new ConcurrentHashMap<>();
 
     @Override
     public void onInitialize() {
