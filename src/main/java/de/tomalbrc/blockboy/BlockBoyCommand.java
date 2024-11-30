@@ -18,9 +18,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class BlockBoyCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -29,6 +31,16 @@ public class BlockBoyCommand {
         blockboy.then(argument("rom", StringArgumentType.word()).suggests(new RomSuggestionProvider()).executes(command -> {
             EmulatorGui gui = new EmulatorGui(command.getSource().getPlayer(), 256, 256);
             gui.playRom(RomSuggestionProvider.resolve(StringArgumentType.getString(command, "rom")));
+            return 0;
+        }));
+
+        blockboy.then(literal("force-stop").executes(x -> {
+            var player = x.getSource().getPlayer();
+            if (BlockBoy.activeSessions.containsKey(player)) {
+                Objects.requireNonNull(BlockBoy.activeSessions.get(player).getController()).stopEmulation();
+                Objects.requireNonNull(BlockBoy.activeSessions.get(player)).close();
+                BlockBoy.activeSessions.remove(player);
+            }
             return 0;
         }));
 
