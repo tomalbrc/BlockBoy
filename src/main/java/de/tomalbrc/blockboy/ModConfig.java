@@ -23,6 +23,8 @@ public class ModConfig {
     public String romsPath = "roms/";
     public String savesPath = "roms/";
 
+    public boolean sound = false;
+
 
     // impl
 

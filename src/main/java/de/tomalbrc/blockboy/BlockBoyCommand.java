@@ -18,11 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.commands.Commands.argument;
-import static net.minecraft.commands.Commands.literal;
 
 public class BlockBoyCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -34,19 +32,8 @@ public class BlockBoyCommand {
             return 0;
         }));
 
-        blockboy.then(literal("force-stop").executes(x -> {
-            var player = x.getSource().getPlayer();
-            if (BlockBoy.activeSessions.containsKey(player)) {
-                Objects.requireNonNull(BlockBoy.activeSessions.get(player).getController()).stopEmulation();
-                Objects.requireNonNull(BlockBoy.activeSessions.get(player)).close();
-                BlockBoy.activeSessions.remove(player);
-            }
-            return 0;
-        }));
-
-        LiteralCommandNode<CommandSourceStack> gestureNode = blockboy.build();
-
-        dispatcher.getRoot().addChild(gestureNode);
+        LiteralCommandNode<CommandSourceStack> node = blockboy.build();
+        dispatcher.getRoot().addChild(node);
     }
 
     static class RomSuggestionProvider implements SuggestionProvider<CommandSourceStack> {
