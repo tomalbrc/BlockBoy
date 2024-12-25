@@ -2,6 +2,7 @@ package eu.rekawek.coffeegb.emulator;
 
 import de.tomalbrc.blockboy.BlockBoy;
 import de.tomalbrc.blockboy.BlockBoySoundOutput;
+import de.tomalbrc.blockboy.ModConfig;
 import eu.rekawek.coffeegb.CartridgeOptions;
 import eu.rekawek.coffeegb.Gameboy;
 import eu.rekawek.coffeegb.controller.ButtonListener;
@@ -46,7 +47,7 @@ public class EmulationController {
 
         this.type = Cartridge.GameboyType.AUTOMATIC;
         this.display = new BlockBoyDisplay(1, false);
-        this.sound = FabricLoader.getInstance().isModLoaded("voicechat") ? new BlockBoySoundOutput(player) : SoundOutput.NULL_OUTPUT;
+        this.sound = FabricLoader.getInstance().isModLoaded("voicechat") && ModConfig.getInstance().sound ? new BlockBoySoundOutput(player) : SoundOutput.NULL_OUTPUT;
         this.player = player;
     }
 
