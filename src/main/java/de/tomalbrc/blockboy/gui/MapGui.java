@@ -1,5 +1,6 @@
 package de.tomalbrc.blockboy.gui;
 
+import de.tomalbrc.blockboy.ModConfig;
 import eu.pb4.mapcanvas.api.core.CombinedPlayerCanvas;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.VirtualDisplay;
@@ -35,6 +36,9 @@ public class MapGui extends HotbarGui {
     public MapGui(ServerPlayer player, int width, int height) {
         super(player);
         var pos = player.getOnPos().atY(2048);
+        if (!ModConfig.getInstance().teleportPlayer) {
+            pos = player.getOnPos();
+        }
         this.pos = pos;
 
         this.entity = new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, player.level());
