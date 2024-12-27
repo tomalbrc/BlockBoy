@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerList.class)
 public class PlayerListMixin {
-    @Inject(method = "broadcastAll(Lnet/minecraft/network/protocol/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
+    @Inject(method = "broadcastAll(Lnet/minecraft/network/protocol/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"), cancellable = true)
     private void blockboy$onBroadcastAll(Packet<?> packet, CallbackInfo ci, @Local ServerPlayer serverPlayer) {
         if (BlockBoy.activeSessions.containsKey(serverPlayer)) {
             if ((BlockBoy.activeSessions.get(serverPlayer).hasCustomTime() && packet instanceof ClientboundSetTimePacket)) {

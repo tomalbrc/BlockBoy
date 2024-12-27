@@ -36,9 +36,6 @@ public abstract class ServerGamePacketListenerImplMixin {
     @Inject(method = "handleCustomCommandSuggestions", at = @At("HEAD"), cancellable = true)
     private void blockboy$handleCustomCommandSuggestions(ServerboundCommandSuggestionPacket packet, CallbackInfo ci) {
         if (this.player.containerMenu instanceof VirtualScreenHandlerInterface handler && handler.getGui() instanceof MapGui mapGui) {
-            this.player.server.execute(() -> {
-                mapGui.onCommandSuggestion(packet.getId(), packet.getCommand());
-            });
             ci.cancel();
         }
     }
@@ -54,9 +51,7 @@ public abstract class ServerGamePacketListenerImplMixin {
     @Inject(method = "handlePlayerInput", at = @At("HEAD"), cancellable = true)
     private void blockboy$onPlayerInput(ServerboundPlayerInputPacket packet, CallbackInfo ci) {
         if (this.player.containerMenu instanceof VirtualScreenHandlerInterface handler && handler.getGui() instanceof MapGui mapGui) {
-            this.player.server.execute(() -> {
-                mapGui.onPlayerInput(packet.getXxa(), packet.getZza(), packet.isJumping(), packet.isShiftKeyDown());
-            });
+            this.player.server.execute(() -> mapGui.onPlayerInput(packet.input()));
             ci.cancel();
         }
     }
@@ -64,9 +59,6 @@ public abstract class ServerGamePacketListenerImplMixin {
     @Inject(method = "handlePlayerCommand", at = @At("HEAD"), cancellable = true)
     private void blockboy$onClientCommand(ServerboundPlayerCommandPacket packet, CallbackInfo ci) {
         if (this.player.containerMenu instanceof VirtualScreenHandlerInterface handler && handler.getGui() instanceof MapGui mapGui) {
-            this.player.server.execute(() -> {
-                mapGui.onPlayerCommand(packet.getId(), packet.getAction(), packet.getData());
-            });
             ci.cancel();
         }
     }
@@ -74,9 +66,7 @@ public abstract class ServerGamePacketListenerImplMixin {
     @Inject(method = "performUnsignedChatCommand", at = @At("HEAD"), cancellable = true)
     private void blockboy$onPerformUnsignedChatCommand(String string, CallbackInfo ci) {
         if (this.player.containerMenu instanceof VirtualScreenHandlerInterface handler && handler.getGui() instanceof MapGui mapGui) {
-            this.player.server.execute(() -> {
-                mapGui.executeCommand(string);
-            });
+            this.player.server.execute(() -> mapGui.executeCommand(string));
             ci.cancel();
         }
     }

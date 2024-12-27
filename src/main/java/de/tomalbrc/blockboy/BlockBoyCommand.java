@@ -32,7 +32,7 @@ public class BlockBoyCommand {
                 gui.playRom(RomSuggestionProvider.resolve(StringArgumentType.getString(command, "rom")));
             }
             catch (Exception e) {
-                e.printStackTrace();
+                BlockBoy.LOGGER.error("Could not load rom: {}", e.getLocalizedMessage());
             }
             return 0;
         }));
@@ -58,7 +58,7 @@ public class BlockBoyCommand {
                         builder.suggest(filepath.getFileName().toString());
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                BlockBoy.LOGGER.error("Error while suggesting rom: {}", e.getLocalizedMessage());
             }
 
             return builder.buildFuture();

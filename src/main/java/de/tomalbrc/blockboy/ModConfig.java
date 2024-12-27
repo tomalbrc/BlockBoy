@@ -2,6 +2,7 @@ package de.tomalbrc.blockboy;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.FileNotFoundException;
@@ -22,6 +23,9 @@ public class ModConfig {
     // entries
     public String romsPath = "roms/";
     public String savesPath = "roms/";
+
+    @SerializedName("teleport_player")
+    public boolean teleportPlayer = true;
 
     public boolean sound = false;
 

@@ -12,7 +12,6 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.RootCommandNode;
 import de.tomalbrc.blockboy.BlockBoy;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.rekawek.coffeegb.CartridgeOptions;
@@ -27,6 +26,7 @@ import net.minecraft.network.protocol.game.ClientboundRotateHeadPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTimePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.Vec3;
@@ -39,8 +39,6 @@ import java.util.concurrent.CompletableFuture;
 public class EmulatorGui extends MapGui {
     private static final CommandDispatcher<EmulatorGui> COMMANDS = new CommandDispatcher<>();
 
-    private int width;
-    private int height;
     private int xPos;
     private int yPos;
 
@@ -49,15 +47,12 @@ public class EmulatorGui extends MapGui {
     @Nullable
     private EmulationController controller;
 
-    private ServerPlayer player;
+    private final ServerPlayer player;
 
     private boolean customTime = false;
 
     public EmulatorGui(ServerPlayer player, int width, int height) {
         super(player, Mth.ceil(width / 128d) + 2, Mth.ceil(height / 128d) + 2);
-
-        this.width = width;
-        this.height = height;
 
         this.player = player;
 
@@ -65,14 +60,13 @@ public class EmulatorGui extends MapGui {
 
         player.connection.send(new ClientboundRotateHeadPacket(player, (byte)0));
 
-        
-
         // stop rain
         player.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.START_RAINING, 1));
 
         BlockBoy.activeSessions.put(player, this);
     }
 
+    @Nullable
     public EmulationController getController() {
         return controller;
     }
@@ -96,7 +90,8 @@ public class EmulatorGui extends MapGui {
 
     @Override
     public void onClose() {
-        controller.stopEmulation();
+        if (controller != null)
+            controller.stopEmulation();
         BlockBoy.activeSessions.remove(player);
         super.onClose();
     }
@@ -107,59 +102,72 @@ public class EmulatorGui extends MapGui {
     Direction xdirection = Direction.UP;
 
     @Override
-    public void onPlayerInput(float deltaX, float deltaZ, boolean jumping, boolean shiftKeyDown) {
-        if (jumping) {
-            this.controller.pressed(ButtonListener.Button.A);
+    public void onPlayerInput(Input input) {
+        if (input.jump()) {
+            if (controller != null)
+                this.controller.pressed(ButtonListener.Button.A);
             this.wasJumping = true;
         } else if (this.wasJumping) {
-            this.controller.released(ButtonListener.Button.A);
+            if (controller != null)
+                this.controller.released(ButtonListener.Button.A);
             this.wasJumping = false;
         }
 
-        if (shiftKeyDown) {
+        if (input.shift()) {
             this.wasSneaking = true;
-            this.controller.pressed(ButtonListener.Button.B);
+            if (controller != null)
+                this.controller.pressed(ButtonListener.Button.B);
         } else if (this.wasJumping) {
-            this.controller.released(ButtonListener.Button.B);
+            if (controller != null)
+                this.controller.released(ButtonListener.Button.B);
             this.wasSneaking = false;
         }
 
-        if (deltaZ > 0) {
+        if (input.forward()) {
             this.zdirection = Direction.NORTH;
-            this.controller.pressed(ButtonListener.Button.UP);
+            if (controller != null)
+                this.controller.pressed(ButtonListener.Button.UP);
         } else if (this.zdirection == Direction.NORTH) {
-            this.controller.released(ButtonListener.Button.UP);
+            if (controller != null)
+                this.controller.released(ButtonListener.Button.UP);
             this.zdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
         }
 
-        if (deltaZ < 0) {
+        if (input.backward()) {
             this.zdirection = Direction.SOUTH;
-            this.controller.pressed(ButtonListener.Button.DOWN);
+            if (controller != null)
+                this.controller.pressed(ButtonListener.Button.DOWN);
         } else if (this.zdirection == Direction.SOUTH) {
-            this.controller.released(ButtonListener.Button.DOWN);
+            if (controller != null)
+                this.controller.released(ButtonListener.Button.DOWN);
             this.zdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
         }
 
-        if (deltaX < 0) {
+        if (input.right()) {
             this.xdirection = Direction.EAST;
-            this.controller.pressed(ButtonListener.Button.RIGHT);
+            if (controller != null)
+                this.controller.pressed(ButtonListener.Button.RIGHT);
         } else if (this.xdirection == Direction.EAST) {
-            this.controller.released(ButtonListener.Button.RIGHT);
+            if (controller != null)
+                this.controller.released(ButtonListener.Button.RIGHT);
             this.xdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
         }
 
-        if (deltaX > 0) {
+        if (input.left()) {
             this.xdirection = Direction.WEST;
-            this.controller.pressed(ButtonListener.Button.LEFT);
+            if (controller != null)
+                this.controller.pressed(ButtonListener.Button.LEFT);
         } else if (this.xdirection == Direction.WEST) {
-            this.controller.released(ButtonListener.Button.LEFT);
+            if (controller != null)
+                this.controller.released(ButtonListener.Button.LEFT);
             this.xdirection = Direction.UP; // abuse up as noop, only use n,e,s,w
         }
     }
 
     @Override
     public boolean onClickEntity(int entityId, EntityInteraction type, boolean isSneaking, @Nullable Vec3 interactionPos) {
-        this.controller.pressed(type == EntityInteraction.ATTACK ? ButtonListener.Button.START : ButtonListener.Button.SELECT);
+        if (controller != null)
+            this.controller.pressed(type == EntityInteraction.ATTACK ? ButtonListener.Button.START : ButtonListener.Button.SELECT);
         new java.util.Timer().schedule(new java.util.TimerTask() {
             @Override
             public void run() {
@@ -173,7 +181,7 @@ public class EmulatorGui extends MapGui {
         CanvasImage image = null;
         if (controller == null) {
             image = new CanvasImage(this.canvas.getWidth(), this.canvas.getHeight());
-            CanvasUtils.clear(image, CanvasColor.YELLOW_HIGH);
+            CanvasUtils.clear(image);
         }
         else {
             image = controller.getDisplay().render((int)(BlockBoyDisplay.DISPLAY_WIDTH*2.0*scale), (int)(BlockBoyDisplay.DISPLAY_HEIGHT*2.0*scale));
@@ -193,8 +201,6 @@ public class EmulatorGui extends MapGui {
         }
 
         this.scale = width / 256.0;
-        this.width = width;
-        this.height = height;
         CanvasUtils.clear(this.canvas);
     }
 
@@ -203,7 +209,8 @@ public class EmulatorGui extends MapGui {
         try {
             COMMANDS.execute(command, this);
         } catch (Throwable e) {
-            e.printStackTrace();
+            BlockBoy.LOGGER.error("Could not execute command!");
+            BlockBoy.LOGGER.error(e.getLocalizedMessage());
         }
     }
 
@@ -221,7 +228,7 @@ public class EmulatorGui extends MapGui {
 
             var player = x.getSource().getPlayer();
             if (player != null) {
-                player.connection.send(new ClientboundSetTimePacket(player.level().getGameTime(), player.level().getDayTime(), player.level().getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)));
+                player.connection.send(new ClientboundSetTimePacket(player.level().getGameTime(), player.level().getDayTime(), player.serverLevel().getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)));
                 if (player.level().isRaining())
                     player.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.STOP_RAINING, 0));
             }
@@ -234,7 +241,7 @@ public class EmulatorGui extends MapGui {
             var name = StringArgumentType.getString(x, "friend");
             var friend = player.server.getPlayerList().getPlayerByName(name);
 
-            if (player != null && friend != null) {
+            if (friend != null) {
                 var s1 = BlockBoy.activeSessions.get(player);
                 var s2 = BlockBoy.activeSessions.get(friend);
                 if (s2 == null) {
@@ -243,10 +250,12 @@ public class EmulatorGui extends MapGui {
                 }
 
                 try {
+                    assert s1.getController() != null;
+                    assert s2.getController() != null;
                     s1.getController().link(s2.getController());
                 } catch (IOException e) {
                     player.sendSystemMessage(Component.literal("Could not connect with " + name));
-                    e.printStackTrace();
+                    BlockBoy.LOGGER.error("Could not link: {}", e.getLocalizedMessage());
                 }
             }
 
@@ -258,14 +267,15 @@ public class EmulatorGui extends MapGui {
             var name = StringArgumentType.getString(x, "friend");
             var friend = player.server.getPlayerList().getPlayerByName(name);
 
-            if (player != null && friend != null) {
+            if (friend != null) {
                 var s1 = BlockBoy.activeSessions.get(player);
 
                 try {
+                    assert s1.getController() != null;
                     s1.getController().unlink();
                 } catch (IOException e) {
                     player.sendSystemMessage(Component.literal("Could not unlink, are you linked with someone?"));
-                    e.printStackTrace();
+                    BlockBoy.LOGGER.error("Could not unlink: {}", e.getLocalizedMessage());
                 }
             }
 

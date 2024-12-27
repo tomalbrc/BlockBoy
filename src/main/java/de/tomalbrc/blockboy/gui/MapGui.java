@@ -1,5 +1,6 @@
 package de.tomalbrc.blockboy.gui;
 
+import de.tomalbrc.blockboy.ModConfig;
 import eu.pb4.mapcanvas.api.core.CombinedPlayerCanvas;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.VirtualDisplay;
@@ -15,14 +16,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.EnumSet;
 
 public class MapGui extends HotbarGui {
     public final Entity entity;
@@ -34,8 +33,12 @@ public class MapGui extends HotbarGui {
 
     public MapGui(ServerPlayer player, int width, int height) {
         super(player);
-        var pos = player.getOnPos().atY(2048);
-        this.pos = pos;
+
+        BlockPos pos1 = player.getOnPos().atY(2048);
+        if (!ModConfig.getInstance().teleportPlayer) {
+            pos1 = player.getOnPos();
+        }
+        this.pos = pos1;
 
         this.entity = new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, player.level());
         this.entity.setYRot(0);
@@ -58,8 +61,6 @@ public class MapGui extends HotbarGui {
         buf.writeVarIntArray(new int[]{player.getId()});
 
         player.connection.send(new ClientboundSetPassengersPacket(buf));
-        //player.connection.send(new ClientboundSetCameraPacket(this.entity));
-
 
         for (int i = 0; i < 9; i++) {
             this.setSlot(i, new ItemStack(Items.AIR));
@@ -71,7 +72,6 @@ public class MapGui extends HotbarGui {
     protected void resizeCanvas(int width, int height) {
         this.destroy();
         this.initialize(width, height);
-        this.player.connection.send(new ClientboundTeleportEntityPacket(this.entity));
     }
 
     protected void initialize(int width, int height) {
@@ -102,13 +102,8 @@ public class MapGui extends HotbarGui {
             this.player.connection.send(new ClientboundRemoveEntitiesPacket(this.additionalEntities));
         }
         this.player.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, this.player.gameMode.getGameModeForPlayer().getId()));
-        this.player.connection.send(new ClientboundPlayerPositionPacket(this.player.getX(), this.player.getY(), this.player.getZ(), this.player.getYRot(), this.player.getXRot(), EnumSet.noneOf(RelativeMovement.class), 0));
 
         super.onClose();
-    }
-
-    public void onCommandSuggestion(int id, String fullCommand) {
-
     }
 
     @Override
@@ -121,11 +116,6 @@ public class MapGui extends HotbarGui {
         return super.onClickEntity(entityId, type, isSneaking, interactionPos);
     }
 
-    public void setDistance(double i) {
-        this.entity.setPos(this.entity.getX(), this.entity.getY(), this.pos.getZ() - i);
-        this.player.connection.send(new ClientboundTeleportEntityPacket(this.entity));
-    }
-
     @Override
     public boolean onPlayerAction(ServerboundPlayerActionPacket.Action action, Direction direction) {
         if (action == ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS) {
@@ -135,11 +125,8 @@ public class MapGui extends HotbarGui {
     }
 
     // deltaX/Z is currently useless while in camera mode, as it is always 0
-    public void onPlayerInput(float deltaX, float deltaZ, boolean jumping, boolean shiftKeyDown) {
+    public void onPlayerInput(Input input) {
 
-    }
-
-    public void onPlayerCommand(int id, ServerboundPlayerCommandPacket.Action command, int data) {
     }
 
     public void executeCommand(String command) {
